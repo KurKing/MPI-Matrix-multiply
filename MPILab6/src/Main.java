@@ -4,7 +4,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new MPIBlockingMultiplyCalculator(args, 1000).multiply();
+        calculator(true, args, 5000).multiply();
+    }
 
+    private static MPIMultiplyCalculator calculator(boolean isBlocking, String[] args, int matrixSize) {
+
+        if (isBlocking)
+            return new MPIBlockingMultiplyCalculator(args, matrixSize);
+
+        return new MPINonBlockingMultiplyCalculator(args, matrixSize);
     }
 }
