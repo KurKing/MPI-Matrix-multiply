@@ -1,10 +1,10 @@
 import mpi.MPI;
 
 public class Main {
+
     public static void main(String[] args) {
 
-        MPI.Init(args);
+        new MPIBlockingMultiplyCalculator(args, 4).multiply();
 
-        System.out.println(MPI.COMM_WORLD.Rank());
     }
 }
