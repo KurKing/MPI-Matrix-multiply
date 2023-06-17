@@ -12,6 +12,7 @@ public abstract class MPIMultiplyCalculator {
     protected final int chunkSizeLeft;
 
     protected final int matrixSize;
+    protected int id;
 
     protected MPIMultiplyCalculator(String[] args, int matrixSize) {
 
@@ -24,7 +25,23 @@ public abstract class MPIMultiplyCalculator {
         chunkSize = Math.floorDiv(matrixSize, mpiSize - 1);
     }
 
-    abstract void multiply();
+    public final void multiply() {
+
+        id = MPI.COMM_WORLD.Rank();
+
+        if (id == 0) {
+
+            System.out.println("Multiply in master MPI with size: "+mpiSize+"; Chunk size: "+chunkSize+"; Chunk size left: "+chunkSizeLeft);
+
+            masterLogic();
+            return;
+        }
+
+        defaultLogic();
+    }
+
+    abstract void masterLogic();
+    abstract void defaultLogic();
 
     protected void print(int[][] matrix) {
 
@@ -97,14 +114,49 @@ public abstract class MPIMultiplyCalculator {
 
     protected int[][] matrixFromArray(int[] array, int size) {
 
-        int[][] matrix = new int[size][size];
+        int rows = array.length / size;
+        int[][] matrix = new int[rows][size];
 
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < size; j++) {
                 matrix[i][j] = array[i * size + j];
             }
         }
 
         return matrix;
+    }
+
+    protected int[][] partOfMatrix(int[][] matrix, int from, int to) {
+
+        int rowSize = matrix[0].length;
+        int[][] part = new int[to - from][rowSize];
+
+        for (int i = from; i < to; i++) {
+
+            for (int j = 0; j < rowSize; j++) {
+
+                part[i-from][j] = matrix[i][j];
+            }
+        }
+
+        return part;
+    }
+
+    protected int[][] multiplyChunks(int[][] lhs, int[][] rhs) {
+
+        int[][] resultChunks = new int[lhs.length][rhs[0].length];
+
+        for (int i = 0; i < lhs.length; i++) {
+
+            for (int j = 0; j < rhs[0].length; j++) {
+
+                for (int n = 0; n < rhs.length; n++) {
+
+                    resultChunks[i][j] += lhs[i][n] * rhs[n][j];
+                }
+            }
+        }
+
+        return resultChunks;
     }
 }
