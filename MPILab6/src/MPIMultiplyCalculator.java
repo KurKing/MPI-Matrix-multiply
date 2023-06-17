@@ -37,13 +37,13 @@ public abstract class MPIMultiplyCalculator {
             return;
         }
 
-        defaultLogic();
+        workerLogic();
     }
 
     abstract void masterLogic();
-    abstract void defaultLogic();
+    abstract void workerLogic();
 
-    protected void print(int[][] matrix) {
+    protected final void print(int[][] matrix) {
 
         System.out.println("Print matrix with size: "+matrix.length+"x"+matrix[0].length+"; "+matrix);
 
@@ -58,7 +58,7 @@ public abstract class MPIMultiplyCalculator {
         }
     }
 
-    protected void printArray(int[] array) {
+    protected final void printArray(int[] array) {
 
         System.out.println("Print array with size: "+array.length+"; "+array);
 
@@ -70,7 +70,7 @@ public abstract class MPIMultiplyCalculator {
         System.out.println("");
     }
 
-    protected int[][] generateMatrix(int size, boolean isOneMatrix) {
+    protected final int[][] generateMatrix(int size, boolean isOneMatrix) {
 
         int[][] matrix = new int[size][size];
         Random random = ThreadLocalRandom.current();
@@ -91,7 +91,7 @@ public abstract class MPIMultiplyCalculator {
         return matrix;
     }
 
-    protected int[] arrayFromMatrix(int[][] matrix) {
+    protected final int[] arrayFromMatrix(int[][] matrix) {
 
         int resultSize = matrix.length * matrix[0].length;
         List<Integer> result = new ArrayList<>(resultSize);
@@ -112,7 +112,7 @@ public abstract class MPIMultiplyCalculator {
         return intArray;
     }
 
-    protected int[][] matrixFromArray(int[] array, int size) {
+    protected final int[][] matrixFromArray(int[] array, int size) {
 
         int rows = array.length / size;
         int[][] matrix = new int[rows][size];
@@ -126,7 +126,7 @@ public abstract class MPIMultiplyCalculator {
         return matrix;
     }
 
-    protected int[][] partOfMatrix(int[][] matrix, int from, int to) {
+    protected final int[][] partOfMatrix(int[][] matrix, int from, int to) {
 
         int rowSize = matrix[0].length;
         int[][] part = new int[to - from][rowSize];
@@ -142,7 +142,7 @@ public abstract class MPIMultiplyCalculator {
         return part;
     }
 
-    protected int[][] multiplyChunks(int[][] lhs, int[][] rhs) {
+    protected final int[][] multiplyChunks(int[][] lhs, int[][] rhs) {
 
         int[][] resultChunks = new int[lhs.length][rhs[0].length];
 

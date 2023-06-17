@@ -53,7 +53,7 @@ public class MPINonBlockingMultiplyCalculator extends MPIMultiplyCalculator {
     }
 
     @Override
-    void defaultLogic() {
+    void workerLogic() {
 
         int rowNumber = chunkSize;
         if (id == mpiSize - 1)
